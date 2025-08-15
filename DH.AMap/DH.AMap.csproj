@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
     <OutputType>Library</OutputType>
-    <RootNamespace>Pek.Mail</RootNamespace>
-    <AssemblyTitle>邮件操作类库</AssemblyTitle>
-    <Description>基于DH框架的邮件操作类库</Description>
+    <RootNamespace>DH.AMap</RootNamespace>
+    <AssemblyTitle>地图SDK类库</AssemblyTitle>
+    <Description>基于DH框架的地图SDK类库</Description>
     <Company>湖北登灏科技有限公司</Company>
-    <Copyright>©2020-2024 湖北登灏科技有限公司</Copyright>
-    <VersionPrefix>4.00</VersionPrefix>
+    <Copyright>©2020-2025 湖北登灏科技有限公司</Copyright>
+    <VersionPrefix>4.14</VersionPrefix>
     <VersionSuffix>$([System.DateTime]::Now.ToString(`yyyy.MMdd`))</VersionSuffix>
     <Version>$(VersionPrefix).$(VersionSuffix)</Version>
     <FileVersion>$(Version)</FileVersion>
@@ -44,12 +44,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MailKit" Version="4.9.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Pek.Common" Version="4.0.2024.1231-beta0924" />
+    <PackageReference Include="Pek.AspNetCore" Version="4.14.2025.802" />
+    <PackageReference Include="Pek.Common" Version="4.14.2025.815-beta0343" />
   </ItemGroup>
 
   <ItemGroup>
