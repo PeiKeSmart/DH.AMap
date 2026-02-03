@@ -53,27 +53,34 @@ public class DHStartup : IPekStartup
     /// <param name="endpoints">路由生成器</param>
     public void UseDHEndpoints(IEndpointRouteBuilder endpoints)
     {
-        // 高德密钥反向代码
+        // 高德密钥反向代理
+        
+        // JavaScript API 加载地址代理（使用 key 参数）
+        endpoints.Map("/_AMapService/maps", async context =>
+        {
+            await ProxyRequest(context, "https://webapi.amap.com/maps", "/_AMapService/", "key").ConfigureAwait(false);
+        });
+        
         endpoints.Map("/_AMapService/v4/map/styles", async context =>
         {
-            await ProxyRequest(context, "https://webapi.amap.com/v4/map/styles", "/_AMapService/").ConfigureAwait(false);
+            await ProxyRequest(context, "https://webapi.amap.com/v4/map/styles", "/_AMapService/", "jscode").ConfigureAwait(false);
         });
 
         endpoints.Map("/_AMapService/v3/vectormap", async context =>
         {
-            await ProxyRequest(context, "https://fmap01.amap.com/v3/vectormap", "/_AMapService/").ConfigureAwait(false);
+            await ProxyRequest(context, "https://fmap01.amap.com/v3/vectormap", "/_AMapService/", "jscode").ConfigureAwait(false);
         });
 
         endpoints.Map("/_AMapService/{**path}", async context =>
         {
-            await ProxyRequest(context, "https://restapi.amap.com/", "/_AMapService/").ConfigureAwait(false);
+            await ProxyRequest(context, "https://restapi.amap.com/", "/_AMapService/", "jscode").ConfigureAwait(false);
         });
     }
 
-    private async Task ProxyRequest(HttpContext context, String targetUrl, String replaceUrl)
+    private async Task ProxyRequest(HttpContext context, String targetUrl, String replaceUrl, String keyParamName = "jscode")
     {
         var queryString = context.Request.QueryString;
-        var newQueryString = queryString.Add("jscode", AMapSetting.Current.AMapSecret ?? String.Empty);
+        var newQueryString = queryString.Add(keyParamName, AMapSetting.Current.AMapSecret ?? String.Empty);
 
         var targetUrlWithQueryString = targetUrl + context.Request.Path.Value?.Replace(replaceUrl, "") + newQueryString;
 
