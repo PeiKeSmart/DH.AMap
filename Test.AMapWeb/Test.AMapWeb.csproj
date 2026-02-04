@@ -24,6 +24,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Entity\Config\**" />
+    <Content Remove="Entity\Config\**" />
+    <EmbeddedResource Remove="Entity\Config\**" />
+    <None Remove="Entity\Config\**" />
+  </ItemGroup>
+
+  <ItemGroup>
   <PackageReference Include="DH.NRedis.Extensions" Version="4.17.2026.130-beta1020" />
   <PackageReference Include="DH.NStardust.Extensions" Version="4.17.2026.130-beta0900" />
   <PackageReference Include="DH.SLazyCaptcha" Version="4.16.2025.1227-beta0927" />

@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<EntityModel xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:schemaLocation="https://newlifex.com https://newlifex.com/Model202509.xsd" Version="11.3.2023.0307" Document="https://newlifex.com/xcode/model" xmlns="https://newlifex.com/Model202509.xsd">
+  <Option>
+    <!--类名模板。其中{name}替换为Table.Name，如{name}Model/I{name}Dto等-->
+    <ClassNameTemplate />
+    <!--显示名模板。其中{displayName}替换为Table.DisplayName-->
+    <DisplayNameTemplate />
+    <!--基类。可能包含基类和接口，其中{name}替换为Table.Name-->
+    <BaseClass>DHEntityBase</BaseClass>
+    <!--命名空间-->
+    <Namespace>Test.AMapWeb.Entity</Namespace>
+    <!--引用命名空间-->
+    <ExtendNameSpace />
+    <!--输出目录-->
+    <Output>.\</Output>
+    <!--是否使用中文文件名。默认false-->
+    <ChineseFileName>False</ChineseFileName>
+    <!--用于生成Copy函数的参数类型。例如{name}或I{name}-->
+    <ModelNameForCopy />
+    <!--带有索引器。实现IModel接口-->
+    <HasIModel>False</HasIModel>
+    <!--可为null上下文。生成String?等-->
+    <Nullable>True</Nullable>
+    <!--数据库连接名-->
+    <ConnName>DH</ConnName>
+    <!--模型类模版。设置后生成模型类，用于接口数据传输，例如{name}Model-->
+    <ModelClass>{name}Model</ModelClass>
+    <!--模型类输出目录。默认当前目录的Models子目录-->
+    <ModelsOutput>.\Models\</ModelsOutput>
+    <!--模型接口模版。设置后生成模型接口，用于约束模型类和实体类，例如I{name}-->
+    <ModelInterface>I{name}</ModelInterface>
+    <!--模型接口输出目录。默认当前目录的Interfaces子目录-->
+    <InterfacesOutput>.\Interfaces\</InterfacesOutput>
+    <!--用户实体转为模型类的模型类。例如{name}或{name}DTO-->
+    <ModelNameForToModel />
+    <!--命名格式。Default/Upper/Lower/Underline-->
+    <NameFormat>Default</NameFormat>
+    <!--魔方区域显示名-->
+    <DisplayName />
+    <!--魔方控制器输出目录-->
+    <CubeOutput />
+  </Option>
+  <Tables>
+    <Table Name="UploadInfo" TableName="DH_Upload" Description="上传文件表" IgnoreNameCase="False">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="OriginFileName" DataType="String" Length="200" Description="上传实际文件名" />
+        <Column Name="FileName" DataType="String" Description="上传文件名" />
+        <Column Name="FileSize" DataType="Int64" Description="上传文件大小" />
+        <Column Name="FileType" DataType="Int32" Description="上传文件类别 0:无 1:文章 2:帮助内容 3:店铺幻灯片 4:会员协议 5:积分礼品切换 6:积分礼品内容 7:可视化编辑模块 8:单页文章 9:广告 50:源码" />
+        <Column Name="IsImg" DataType="Boolean" Description="文件类型 true为图片" />
+        <Column Name="FileUrl" DataType="String" Length="100" Description="文件Url" />
+        <Column Name="ItemId" DataType="Int32" Description="文件信息ID" />
+        <Column Name="CreateUser" DataType="String" Description="创建者" />
+        <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
+        <Column Name="CreateTime" DataType="DateTime" Description="创建时间" />
+        <Column Name="CreateIP" DataType="String" Description="创建地址" />
+        <Column Name="UpdateUser" DataType="String" Description="更新者" />
+        <Column Name="UpdateUserID" DataType="Int32" Description="更新者" />
+        <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" />
+        <Column Name="UpdateIP" DataType="String" Description="更新地址" />
+      </Columns>
+      <Indexes>
+        <Index Columns="ItemId,FileType" />
+      </Indexes>
+    </Table>
+    <Table Name="UserEx" TableName="DH_UserEx" Description="用户扩展表" IgnoreNameCase="False">
+      <Columns>
+        <Column Name="Id" DataType="Int32" PrimaryKey="True" Description="用户Id" />
+        <Column Name="UpdateUser" DataType="String" Description="更新者" />
+        <Column Name="UpdateUserID" DataType="Int32" Description="更新者" />
+        <Column Name="UpdateTime" DataType="DateTime" Description="更新时间" />
+        <Column Name="UpdateIP" DataType="String" Description="更新地址" />
+      </Columns>
+    </Table>
+    <Table Name="SingleArticle" TableName="DH_SingleArticle" Description="单页文章" IgnoreNameCase="False">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="Url" DataType="String" Length="200" Description="文章跳转链接" />
+        <Column Name="Show" DataType="Boolean" Description="文章是否显示。默认为是" />
+        <Column Name="Sort" DataType="Int32" DefaultValue="255" Description="文章排序" />
+        <Column Name="Code" DataType="String" Nullable="False" Description="调用别名。不可重复" />
+        <Column Name="Name" DataType="String" Master="True" Length="200" Description="文章标题" />
+        <Column Name="Content" DataType="String" RawType="text" Length="0" Description="内容" />
+        <Column Name="MobileContent" DataType="String" RawType="text" Length="0" Description="内容(移动端)" />
+        <Column Name="Summary" DataType="String" Length="512" Description="简介" />
+        <Column Name="Pic" DataType="String" Length="255" Description="文章主图" />
+        <Column Name="AllowDel" DataType="Boolean" DefaultValue="True" Description="是否允许删除。默认为是" />
+        <Column Name="ViewName" DataType="String" Length="100" Description="模板名称" />
+        <Column Name="SeoTitle" DataType="String" Length="255" Description="SEO标题" />
+        <Column Name="Keys" DataType="String" Length="255" Description="SEO关键词" />
+        <Column Name="Description" DataType="String" Length="255" Description="SEO描述" />
+        <Column Name="Hits" DataType="Int32" Description="查看次数" />
+        <Column Name="CreateUser" DataType="String" Description="创建者" />
+        <Column Name="CreateUserID" DataType="Int32" Description="创建者" />
+        <Column Name="CreateTime" DataType="Int64" Description="创建时间" />
+        <Column Name="CreateIP" DataType="String" Description="创建地址" />
+        <Column Name="UpdateUser" DataType="String" Description="更新者" />
+        <Column Name="UpdateUserID" DataType="Int32" Description="更新者" />
+        <Column Name="UpdateTime" DataType="Int64" Description="更新时间" />
+        <Column Name="UpdateIP" DataType="String" Description="更新地址" />
+      </Columns>
+      <Indexes>
+        <Index Columns="Code" Unique="True" />
+        <Index Columns="Name" Unique="True" />
+      </Indexes>
+    </Table>
+    <Table Name="SingleArticleLan" TableName="DH_SingleArticleLan" Description="单页文章翻译" IgnoreNameCase="False">
+      <Columns>
+        <Column Name="Id" DataType="Int32" Identity="True" PrimaryKey="True" Description="编号" />
+        <Column Name="SId" DataType="Int32" Description="单页文章Id" />
+        <Column Name="LId" DataType="Int32" Description="所属语言Id" />
+        <Column Name="Name" DataType="String" Master="True" Length="200" Description="文章标题" />
+        <Column Name="Content" DataType="String" RawType="text" Length="0" Description="内容" />
+        <Column Name="MobileContent" DataType="String" RawType="text" Length="0" Description="内容(移动端)" />
+        <Column Name="Summary" DataType="String" Length="512" Description="简介" />
+        <Column Name="Pic" DataType="String" Length="255" Description="文章主图" />
+        <Column Name="SeoTitle" DataType="String" Length="255" Description="SEO标题" />
+        <Column Name="Keys" DataType="String" Length="255" Description="SEO关键词" />
+        <Column Name="Description" DataType="String" Length="255" Description="SEO描述" />
+      </Columns>
+      <Indexes>
+        <Index Columns="SId,LId" Unique="True" />
+      </Indexes>
+    </Table>
+  </Tables>
+</EntityModel>
