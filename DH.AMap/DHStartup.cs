@@ -53,36 +53,55 @@ public class DHStartup : IPekStartup
     /// <param name="endpoints">路由生成器</param>
     public void UseDHEndpoints(IEndpointRouteBuilder endpoints)
     {
-        // 高德密钥反向代理
+        // 高德地图反向代理
         
-        // JavaScript API 加载地址代理（使用 key 参数）
+        // JavaScript API 加载地址代理（使用 key 参数，不需要签名）
         endpoints.Map("/_AMapService/maps", async context =>
         {
-            await ProxyRequest(context, "https://webapi.amap.com/maps", "/_AMapService/", "key").ConfigureAwait(false);
+            await ProxyRequest(context, "https://webapi.amap.com/maps", "/_AMapService/", "key", false).ConfigureAwait(false);
         });
         
+        // 地图样式接口（使用 key 参数，需要签名）
         endpoints.Map("/_AMapService/v4/map/styles", async context =>
         {
-            await ProxyRequest(context, "https://webapi.amap.com/v4/map/styles", "/_AMapService/", "jscode").ConfigureAwait(false);
+            await ProxyRequest(context, "https://webapi.amap.com/v4/map/styles", "/_AMapService/", "key", true).ConfigureAwait(false);
         });
 
+        // 矢量地图接口（使用 key 参数，需要签名）
         endpoints.Map("/_AMapService/v3/vectormap", async context =>
         {
-            await ProxyRequest(context, "https://fmap01.amap.com/v3/vectormap", "/_AMapService/", "jscode").ConfigureAwait(false);
+            await ProxyRequest(context, "https://fmap01.amap.com/v3/vectormap", "/_AMapService/", "key", true).ConfigureAwait(false);
         });
 
+        // Web 服务 API（使用 key 参数，需要签名）
         endpoints.Map("/_AMapService/{**path}", async context =>
         {
-            await ProxyRequest(context, "https://restapi.amap.com/", "/_AMapService/", "jscode").ConfigureAwait(false);
+            await ProxyRequest(context, "https://restapi.amap.com/", "/_AMapService/", "key", true).ConfigureAwait(false);
         });
     }
 
-    private async Task ProxyRequest(HttpContext context, String targetUrl, String replaceUrl, String keyParamName = "jscode")
+    private async Task ProxyRequest(HttpContext context, String targetUrl, String replaceUrl, String keyParamName = "key", Boolean needSignature = true)
     {
         var queryString = context.Request.QueryString;
-        var newQueryString = queryString.Add(keyParamName, AMapSetting.Current.AMapSecret ?? String.Empty);
+        
+        // 添加 key 参数
+        var newQueryString = queryString.Add(keyParamName, AMapSetting.Current.AMapKey ?? String.Empty);
 
-        var targetUrlWithQueryString = targetUrl + context.Request.Path.Value?.Replace(replaceUrl, "") + newQueryString;
+        // 构建请求路径（用于签名计算）
+        var requestPath = context.Request.Path.Value?.Replace(replaceUrl, "") ?? String.Empty;
+        var fullPath = requestPath + newQueryString.ToString();
+
+        // 如果需要签名，添加 sig 参数
+        if (needSignature && AMapSetting.Current.EnableSignature)
+        {
+            var signature = AMapSetting.Current.CalculateSignature(fullPath);
+            if (!String.IsNullOrEmpty(signature))
+            {
+                newQueryString = newQueryString.Add("sig", signature);
+            }
+        }
+
+        var targetUrlWithQueryString = targetUrl + requestPath + newQueryString;
 
         using var client = new HttpClient();
         var method = context.Request.Method;

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - 高德地图代理测试</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Microsoft YaHei', Arial, sans-serif; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: #fff; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .header h1 { color: #333; font-size: 28px; }
+        .nav { background: #fff; padding: 15px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .nav a { color: #409EFF; text-decoration: none; margin-right: 20px; font-size: 16px; }
+        .nav a:hover { color: #66b1ff; }
+        .nav a.active { color: #303133; font-weight: bold; }
+        .content { background: #fff; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .footer { text-align: center; padding: 20px; color: #909399; margin-top: 20px; }
+    </style>
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>高德地图代理测试平台</h1>
+        </div>
+        <div class="nav">
+            <a href="/">首页</a>
+            <a href="/Home/ApiTest">JavaScript API测试</a>
+            <a href="/Home/GeoCode">地理编码测试</a>
+            <a href="/Home/ReverseGeoCode">逆地理编码测试</a>
+        </div>
+        <div class="content">
+            @RenderBody()
+        </div>
+        <div class="footer">
+            <p>&copy; 2025 湖北登灏科技有限公司 - DH.AMap 测试平台</p>
+        </div>
+    </div>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

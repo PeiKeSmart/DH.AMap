@@ -1,0 +1,202 @@
+@{
+    ViewBag.Title = "JavaScript API测试";
+}
+
+@section Styles {
+<style>
+    #map { 
+        width: 100%; 
+        height: 600px; 
+        margin-top: 20px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    .test-info {
+        background: #e8f4fd;
+        padding: 15px;
+        margin-top: 20px;
+        border-left: 4px solid #409EFF;
+        border-radius: 4px;
+    }
+    .test-result {
+        margin-top: 20px;
+        padding: 15px;
+        background: #f5f5f5;
+        border-radius: 4px;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    .btn {
+        background: #409EFF;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-right: 10px;
+    }
+    .btn:hover {
+        background: #66b1ff;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .form-group label {
+        display: inline-block;
+        width: 100px;
+        font-weight: bold;
+    }
+    .form-group input {
+        width: 400px;
+        padding: 8px;
+        border: 1px solid #dcdfe6;
+        border-radius: 4px;
+    }
+</style>
+}
+
+<h2>JavaScript API 测试</h2>
+
+<div class="test-info">
+    <h3>测试说明</h3>
+    <p>本页面测试高德地图 JavaScript API 2.0 的基础功能：</p>
+    <ul style="margin: 10px 0; padding-left: 20px; line-height: 1.8;">
+        <li>通过代理端点 <code>/_AMapService/maps?v=2.0</code> 加载高德地图 API</li>
+        <li>创建地图实例并显示</li>
+        <li>添加标记点</li>
+        <li>测试地图交互功能（缩放、拖拽等）</li>
+    </ul>
+</div>
+
+<div style="margin-top: 20px;">
+    <button class="btn" onclick="addMarker()">添加标记</button>
+    <button class="btn" onclick="clearMarkers()">清除标记</button>
+    <button class="btn" onclick="showMapInfo()">显示地图信息</button>
+</div>
+
+<div id="map"></div>
+
+<div class="test-result" id="result">
+    <strong>日志信息：</strong><br>
+    <div id="logContent">等待加载地图...</div>
+</div>
+
+@section Scripts {
+<script src="/_AMapService/maps?v=2.0"></script>
+<script>
+    var map = null;
+    var markers = [];
+
+    function log(message) {
+        var logDiv = document.getElementById('logContent');
+        var time = new Date().toLocaleTimeString();
+        logDiv.innerHTML += '<br>[' + time + '] ' + message;
+        logDiv.scrollTop = logDiv.scrollHeight;
+    }
+
+    // 初始化地图
+    window.onload = function() {
+        try {
+            log('开始初始化地图...');
+            
+            map = new AMap.Map('map', {
+                zoom: 11,
+                center: [116.397428, 39.90923], // 北京天安门
+                viewMode: '3D',
+                pitch: 50, // 地图俯仰角度
+                rotation: 0 // 地图旋转角度
+            });
+
+            log('地图初始化成功！中心点：北京天安门');
+            log('当前缩放级别：' + map.getZoom());
+            log('当前中心点：' + map.getCenter());
+
+            // 添加地图事件监听
+            map.on('zoomchange', function() {
+                log('缩放级别变更：' + map.getZoom());
+            });
+
+            map.on('moveend', function() {
+                var center = map.getCenter();
+                log('地图中心变更：' + center.getLng() + ', ' + center.getLat());
+            });
+
+            map.on('click', function(e) {
+                log('点击地图：' + e.lnglat.getLng() + ', ' + e.lnglat.getLat());
+                addMarkerAt(e.lnglat);
+            });
+
+            // 默认添加一个标记
+            addMarkerAt([116.397428, 39.90923], '天安门');
+
+        } catch (error) {
+            log('错误：' + error.message);
+            console.error('地图初始化失败：', error);
+        }
+    };
+
+    // 在指定位置添加标记
+    function addMarkerAt(position, title) {
+        if (!map) {
+            log('错误：地图未初始化');
+            return;
+        }
+
+        var marker = new AMap.Marker({
+            position: position,
+            title: title || '标记点'
+        });
+
+        map.add(marker);
+        markers.push(marker);
+        log('添加标记：' + position);
+    }
+
+    // 添加随机标记
+    function addMarker() {
+        if (!map) {
+            log('错误：地图未初始化');
+            return;
+        }
+
+        var center = map.getCenter();
+        var offsetLng = (Math.random() - 0.5) * 0.1;
+        var offsetLat = (Math.random() - 0.5) * 0.1;
+        var position = [center.getLng() + offsetLng, center.getLat() + offsetLat];
+
+        addMarkerAt(position, '标记点 ' + (markers.length + 1));
+    }
+
+    // 清除所有标记
+    function clearMarkers() {
+        if (!map) {
+            log('错误：地图未初始化');
+            return;
+        }
+
+        map.remove(markers);
+        markers = [];
+        log('已清除所有标记');
+    }
+
+    // 显示地图信息
+    function showMapInfo() {
+        if (!map) {
+            log('错误：地图未初始化');
+            return;
+        }
+
+        var center = map.getCenter();
+        var zoom = map.getZoom();
+        var bounds = map.getBounds();
+
+        log('========== 地图信息 ==========');
+        log('中心点：' + center.getLng().toFixed(6) + ', ' + center.getLat().toFixed(6));
+        log('缩放级别：' + zoom);
+        log('地图范围：' + bounds);
+        log('标记数量：' + markers.length);
+        log('=============================');
+    }
+</script>
+}

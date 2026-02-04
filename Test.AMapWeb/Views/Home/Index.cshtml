@@ -1,0 +1,83 @@
+@{
+    ViewBag.Title = "首页";
+}
+
+<h2>欢迎使用高德地图代理测试平台</h2>
+
+<div style="margin-top: 30px;">
+    <h3>功能介绍</h3>
+    <p>本测试平台用于验证 DH.AMap 高德地图反向代理功能，包括：</p>
+    <ul style="margin: 20px 0; padding-left: 40px; line-height: 2;">
+        <li><strong>JavaScript API 测试</strong>：测试高德地图 JS API 加载和基础功能</li>
+        <li><strong>地理编码测试</strong>：测试地址转坐标功能</li>
+        <li><strong>逆地理编码测试</strong>：测试坐标转地址功能</li>
+    </ul>
+</div>
+
+<div style="margin-top: 30px; padding: 20px; background: #f9f9f9; border-left: 4px solid #409EFF;">
+    <h3>配置说明</h3>
+    <p style="margin: 10px 0; line-height: 1.8;">
+        首次使用需要配置高德地图 Key 和 Secret，配置文件位于：<br>
+        <code style="background: #fff; padding: 5px 10px; border-radius: 3px;">Config/AMapSetting.config</code>
+    </p>
+    <pre style="background: #282c34; color: #abb2bf; padding: 15px; border-radius: 5px; overflow-x: auto; margin-top: 10px;">
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;AMapSetting&gt;
+  &lt;!-- 必填：高德地图 Key --&gt;
+  &lt;AMapKey&gt;your-amap-key-here&lt;/AMapKey&gt;
+  
+  &lt;!-- 必填：Web 服务 API 私钥（用于数字签名） --&gt;
+  &lt;AMapSecret&gt;your-amap-secret-here&lt;/AMapSecret&gt;
+  
+  &lt;!-- 可选：是否启用数字签名验证，默认 true --&gt;
+  &lt;EnableSignature&gt;true&lt;/EnableSignature&gt;
+&lt;/AMapSetting&gt;</pre>
+    <p style="margin-top: 10px; line-height: 1.8;">
+        <strong>如何获取 Key 和 Secret？</strong><br>
+        1. 登录 <a href="https://console.amap.com/" target="_blank" style="color: #409EFF;">高德开放平台控制台</a><br>
+        2. 创建应用，选择 "Web 服务" 类型<br>
+        3. 应用管理中查看 <strong>Key</strong> 和 <strong>私钥（Secret）</strong>
+    </p>
+</div>
+
+<div style="margin-top: 30px; padding: 20px; background: #fff3cd; border-left: 4px solid #ffc107;">
+    <h3>代理端点说明</h3>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+        <tr style="background: #f5f5f5;">
+            <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">原始接口</th>
+            <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">代理接口</th>
+            <th style="padding: 10px; text-align: left; border: 1px solid #ddd;">说明</th>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;"><code>https://webapi.amap.com/maps</code></td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><code>/_AMapService/maps</code></td>
+            <td style="padding: 10px; border: 1px solid #ddd;">JavaScript API 加载</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;"><code>https://webapi.amap.com/v4/map/styles</code></td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><code>/_AMapService/v4/map/styles</code></td>
+            <td style="padding: 10px; border: 1px solid #ddd;">地图样式接口</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;"><code>https://fmap01.amap.com/v3/vectormap</code></td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><code>/_AMapService/v3/vectormap</code></td>
+            在高德控制台创建 "Web 服务" 类型的应用</li>
+        <li>获取应用的 Key 和 Secret（私钥）</li>
+        <li>配置到 Config/AMapSetting.config 文件中g: 10px; border: 1px solid #ddd;">矢量地图接口</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd;"><code>https://restapi.amap.com/**</code></td>
+            <td style="padding: 10px; border: 1px solid #ddd;"><code>/_AMapService/**</code></td>
+            <td style="padding: 10px; border: 1px solid #ddd;">REST API 接口</td>
+        </tr>
+    </table>
+</div>
+
+<div style="margin-top: 30px;">
+    <h3>快速开始</h3>
+    <ol style="margin: 20px 0; padding-left: 40px; line-height: 2;">
+        <li>配置高德地图密钥（见上方配置说明）</li>
+        <li>重启应用程序</li>
+        <li>选择左侧导航菜单中的测试功能进行验证</li>
+    </ol>
+</div>

@@ -1,0 +1,318 @@
+@{
+    ViewBag.Title = "逆地理编码测试";
+}
+
+@section Styles {
+<style>
+    .form-container {
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 4px;
+        margin-top: 20px;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .form-group label {
+        display: inline-block;
+        width: 120px;
+        font-weight: bold;
+    }
+    .form-group input {
+        width: 250px;
+        padding: 8px;
+        border: 1px solid #dcdfe6;
+        border-radius: 4px;
+    }
+    .btn {
+        background: #409EFF;
+        color: white;
+        border: none;
+        padding: 10px 30px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+    .btn:hover {
+        background: #66b1ff;
+    }
+    .btn-secondary {
+        background: #67C23A;
+    }
+    .btn-secondary:hover {
+        background: #85ce61;
+    }
+    .result-container {
+        margin-top: 30px;
+        padding: 20px;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    .result-title {
+        font-weight: bold;
+        color: #303133;
+        margin-bottom: 15px;
+        font-size: 16px;
+    }
+    .result-item {
+        padding: 10px;
+        margin-bottom: 10px;
+        background: #f5f7fa;
+        border-left: 3px solid #67C23A;
+    }
+    .result-item strong {
+        color: #606266;
+    }
+    #map {
+        width: 100%;
+        height: 500px;
+        margin-top: 20px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    .test-info {
+        background: #e8f4fd;
+        padding: 15px;
+        margin-top: 20px;
+        border-left: 4px solid #409EFF;
+        border-radius: 4px;
+    }
+    .tip {
+        background: #fff3cd;
+        padding: 10px;
+        margin-top: 10px;
+        border-left: 3px solid #ffc107;
+        font-size: 14px;
+    }
+</style>
+}
+
+<h2>逆地理编码测试</h2>
+
+<div class="test-info">
+    <h3>测试说明</h3>
+    <p>逆地理编码是指将经纬度坐标转换为地址信息的过程。本页面通过代理接口 <code>/_AMapService/v3/geocode/regeo</code> 调用高德地图逆地理编码 API。</p>
+    <ul style="margin: 10px 0; padding-left: 20px; line-height: 1.8;">
+        <li>输入经纬度坐标（如：116.481488,39.990464）</li>
+        <li>或在地图上点击获取坐标</li>
+        <li>点击"查询"按钮获取地址信息</li>
+        <li>可选择返回附近POI、道路信息等扩展数据</li>
+    </ul>
+</div>
+
+<div class="form-container">
+    <div class="form-group">
+        <label>经度：</label>
+        <input type="text" id="longitude" placeholder="请输入经度" value="116.481488">
+    </div>
+    <div class="form-group">
+        <label>纬度：</label>
+        <input type="text" id="latitude" placeholder="请输入纬度" value="39.990464">
+    </div>
+    <div class="form-group">
+        <label>扩展参数：</label>
+        <input type="text" id="extensions" placeholder="可选：base(基本) 或 all(详细)" value="all">
+    </div>
+    <button class="btn" onclick="reverseGeocode()">查询</button>
+    <button class="btn btn-secondary" onclick="getCurrentLocation()">获取当前位置</button>
+    
+    <div class="tip">
+        <strong>提示：</strong>点击地图上任意位置可自动填入经纬度坐标
+    </div>
+</div>
+
+<div id="map"></div>
+
+<div class="result-container" id="resultContainer" style="display: none;">
+    <div class="result-title">查询结果</div>
+    <div id="resultContent"></div>
+</div>
+
+@section Scripts {
+<script src="/_AMapService/maps?v=2.0"></script>
+<script>
+    var map = null;
+    var marker = null;
+
+    // 初始化地图
+    window.onload = function() {
+        map = new AMap.Map('map', {
+            zoom: 15,
+            center: [116.481488, 39.990464], // 北京奥林匹克公园
+            viewMode: '2D'
+        });
+
+        // 点击地图事件
+        map.on('click', function(e) {
+            var lng = e.lnglat.getLng();
+            var lat = e.lnglat.getLat();
+            
+            document.getElementById('longitude').value = lng.toFixed(6);
+            document.getElementById('latitude').value = lat.toFixed(6);
+
+            // 更新标记
+            updateMarker([lng, lat]);
+
+            // 自动查询
+            reverseGeocode();
+        });
+
+        // 初始标记
+        updateMarker([116.481488, 39.990464]);
+    };
+
+    // 更新标记
+    function updateMarker(position) {
+        if (marker) {
+            marker.setPosition(position);
+        } else {
+            marker = new AMap.Marker({
+                position: position,
+                title: '查询位置'
+            });
+            map.add(marker);
+        }
+        map.setCenter(position);
+    }
+
+    // 获取当前位置
+    function getCurrentLocation() {
+        if (!navigator.geolocation) {
+            alert('您的浏览器不支持地理定位');
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                var lng = position.coords.longitude;
+                var lat = position.coords.latitude;
+
+                document.getElementById('longitude').value = lng.toFixed(6);
+                document.getElementById('latitude').value = lat.toFixed(6);
+
+                updateMarker([lng, lat]);
+                reverseGeocode();
+            },
+            function(error) {
+                alert('获取位置失败：' + error.message);
+            }
+        );
+    }
+
+    // 逆地理编码查询
+    async function reverseGeocode() {
+        var longitude = document.getElementById('longitude').value;
+        var latitude = document.getElementById('latitude').value;
+        var extensions = document.getElementById('extensions').value || 'base';
+
+        if (!longitude || !latitude) {
+            alert('请输入经纬度坐标');
+            return;
+        }
+
+        try {
+            // 构建查询参数
+            var params = new URLSearchParams({
+                location: longitude + ',' + latitude,
+                extensions: extensions
+            });
+
+            // 调用代理接口
+            var url = '/_AMapService/v3/geocode/regeo?' + params.toString();
+            console.log('请求URL：', url);
+
+            var response = await fetch(url);
+            var data = await response.json();
+
+            console.log('返回数据：', data);
+
+            // 显示结果
+            displayResult(data);
+
+            // 更新标记位置
+            updateMarker([parseFloat(longitude), parseFloat(latitude)]);
+
+        } catch (error) {
+            console.error('查询失败：', error);
+            alert('查询失败：' + error.message);
+        }
+    }
+
+    // 显示结果
+    function displayResult(data) {
+        var resultContainer = document.getElementById('resultContainer');
+        var resultContent = document.getElementById('resultContent');
+
+        if (data.status !== '1') {
+            resultContent.innerHTML = '<div class="result-item" style="border-left-color: #f56c6c;">查询失败：' + (data.info || '未知错误') + '</div>';
+            resultContainer.style.display = 'block';
+            return;
+        }
+
+        var regeocode = data.regeocode;
+        if (!regeocode) {
+            resultContent.innerHTML = '<div class="result-item" style="border-left-color: #e6a23c;">未找到地址信息</div>';
+            resultContainer.style.display = 'block';
+            return;
+        }
+
+        var html = '';
+
+        // 基本地址信息
+        html += '<div class="result-item">';
+        html += '<strong>基本信息</strong><br>';
+        html += '格式化地址：' + regeocode.formatted_address + '<br>';
+        
+        if (regeocode.addressComponent) {
+            var addr = regeocode.addressComponent;
+            html += '省份：' + (addr.province || '-') + '<br>';
+            html += '城市：' + (addr.city || '-') + '<br>';
+            html += '区县：' + (addr.district || '-') + '<br>';
+            html += '街道：' + (addr.township || '-') + '<br>';
+            html += '社区：' + (addr.neighborhood || '-') + '<br>';
+            html += '建筑：' + (addr.building || '-') + '<br>';
+            html += '行政区编码：' + (addr.adcode || '-') + '<br>';
+        }
+        html += '</div>';
+
+        // 道路信息
+        if (regeocode.roads && regeocode.roads.length > 0) {
+            html += '<div class="result-item">';
+            html += '<strong>附近道路</strong><br>';
+            regeocode.roads.slice(0, 3).forEach(function(road, index) {
+                html += (index + 1) + '. ' + road.name + ' (距离: ' + road.distance + '米)<br>';
+            });
+            html += '</div>';
+        }
+
+        // POI信息
+        if (regeocode.pois && regeocode.pois.length > 0) {
+            html += '<div class="result-item">';
+            html += '<strong>附近POI</strong><br>';
+            regeocode.pois.slice(0, 5).forEach(function(poi, index) {
+                html += (index + 1) + '. ' + poi.name;
+                if (poi.type) html += ' (' + poi.type + ')';
+                html += ' - 距离: ' + poi.distance + '米<br>';
+            });
+            html += '</div>';
+        }
+
+        // AOI信息
+        if (regeocode.aois && regeocode.aois.length > 0) {
+            html += '<div class="result-item">';
+            html += '<strong>所属AOI</strong><br>';
+            regeocode.aois.slice(0, 3).forEach(function(aoi, index) {
+                html += (index + 1) + '. ' + aoi.name;
+                if (aoi.type) html += ' (' + aoi.type + ')';
+                html += '<br>';
+            });
+            html += '</div>';
+        }
+
+        resultContent.innerHTML = html;
+        resultContainer.style.display = 'block';
+    }
+</script>
+}
