@@ -158,11 +158,12 @@ dotnet watch run
 
 ## 技术栈
 
-- ASP.NET Core 8.0
-- Pek.AspNetCore 框架
+- ASP.NET Core 8.0（标准 MVC）
 - DH.AMap 地图SDK
 - 高德地图 JavaScript API 2.0
 - Fetch API
+
+**注意**：测试项目使用标准 ASP.NET Core MVC，不依赖 Pek 框架的其他组件，方便快速运行和测试。
 
 ## 测试建议
 

@@ -1,40 +1,42 @@
 using Microsoft.AspNetCore.Mvc;
 
-using Pek.NCube;
-
 namespace Test.AMapWeb.Controllers;
 
 /// <summary>主页面</summary>
-public class HomeController : PekBaseControllerX
+public class HomeController : Controller
 {
     /// <summary>主页面</summary>
     /// <returns></returns>
-    public ActionResult Index()
+    public IActionResult Index()
     {
+        ViewBag.Title = "首页";
         ViewBag.Message = "高德地图代理测试";
 
-        return PekView();
+        return View();
     }
 
     /// <summary>API测试页面</summary>
     /// <returns></returns>
-    public ActionResult ApiTest()
+    public IActionResult ApiTest()
     {
-        return PekView();
+        ViewBag.Title = "JavaScript API 测试";
+        return View();
     }
 
     /// <summary>地理编码测试页面</summary>
     /// <returns></returns>
-    public ActionResult GeoCode()
+    public IActionResult GeoCode()
     {
-        return PekView();
+        ViewBag.Title = "地理编码测试";
+        return View();
     }
 
     /// <summary>逆地理编码测试页面</summary>
     /// <returns></returns>
-    public ActionResult ReverseGeoCode()
+    public IActionResult ReverseGeoCode()
     {
-        return PekView();
+        ViewBag.Title = "逆地理编码测试";
+        return View();
     }
 
     /// <summary>错误</summary>
@@ -42,6 +44,6 @@ public class HomeController : PekBaseControllerX
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
-        return View("Error");
+        return View();
     }
 }

@@ -8,4 +8,5 @@
     <File Path="Readme.MD" />
   </Folder>
   <Project Path="DH.AMap/DH.AMap.csproj" />
+  <Project Path="Test.AMapWeb/Test.AMapWeb.csproj" />
 </Solution>
