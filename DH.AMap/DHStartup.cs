@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using NewLife;
+using NewLife.Log;
 
 using Pek.Infrastructure;
 using Pek.VirtualFileSystem;
@@ -53,8 +54,9 @@ public class DHStartup : IPekStartup
     /// <param name="endpoints">路由生成器</param>
     public void UseDHEndpoints(IEndpointRouteBuilder endpoints)
     {
+        XTrace.WriteLine("配置高德地图反向代理路由");
         // 高德地图反向代理
-        
+
         // JavaScript API 加载地址代理（使用 key 参数，不需要签名）
         endpoints.Map("/_AMapService/maps", async context =>
         {
