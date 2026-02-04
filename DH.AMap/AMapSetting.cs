@@ -13,37 +13,21 @@ public class AMapSetting : Config<AMapSetting>
 {
     #region 属性
     /// <summary>
-    /// 高德地图 Key（必填）
+    /// Web 端（JS API）Key - 用于 JavaScript API 地图加载（必填）
     /// </summary>
-    [Description("高德地图 Key")]
-    public String? AMapKey { get; set; }
+    [Description("Web 端（JS API）Key")]
+    public String? WebKey { get; set; }
 
     /// <summary>
-    /// 高德地图私钥（可选，Web 服务 API 需要）
+    /// Web 端（JS API）安全密钥 - 用于加强安全性（必填）
     /// </summary>
-    [Description("高德地图私钥")]
-    public String? AMapSecret { get; set; }
+    [Description("Web 端安全密钥（JsCode）")]
+    public String? WebJsCode { get; set; }
 
     /// <summary>
-    /// 是否启用数字签名验证（默认 true）
+    /// Web 服务 Key - 用于 REST API（地理编码、逆地理编码等）（必填）
     /// </summary>
-    [Description("是否启用数字签名验证")]
-    public Boolean EnableSignature { get; set; } = true;
-    #endregion
-
-    #region 方法
-    /// <summary>计算请求签名</summary>
-    /// <param name="url">请求 URL（不含协议和域名，如：/v3/geocode/geo?address=北京&key=xxx）</param>
-    /// <returns>签名字符串</returns>
-    public String? CalculateSignature(String url)
-    {
-        if (!EnableSignature || String.IsNullOrEmpty(AMapSecret)) return null;
-
-        // 使用 MD5 计算签名：MD5(请求路径 + 私钥)
-        var signString = url + AMapSecret;
-        using var md5 = MD5.Create();
-        var bytes = md5.ComputeHash(Encoding.UTF8.GetBytes(signString));
-        return BitConverter.ToString(bytes).Replace("-", "").ToLower();
-    }
+    [Description("Web 服务 Key")]
+    public String? ServiceKey { get; set; }
     #endregion
 }
