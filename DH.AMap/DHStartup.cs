@@ -80,6 +80,12 @@ public class DHStartup : IPekStartup
         {
             await ProxyRequest(context, "https://restapi.amap.com/", "/_AMapService/", useWebKey: false).ConfigureAwait(false);
         });
+
+        //模糊地名查询接口
+        endpoints.Map("/_AMapService/v3/place/text", async context =>
+        {
+            await ProxyRequest(context, "https://restapi.amap.com/v3/place/text", null, useWebKey: false).ConfigureAwait(false);
+        });
     }
 
     private async Task ProxyRequest(HttpContext context, String targetUrl, String? replaceUrl, Boolean useWebKey = false)
